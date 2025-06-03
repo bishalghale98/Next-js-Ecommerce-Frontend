@@ -2,33 +2,43 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import navLinks from "../constants/navLinks"; // adjust this path as needed
+import navLinks from "../constants/navLinks";
 import DesktopNavLinks from "./DesktopNavLinks";
 import MobileNavLinks from "./MobileNavLinks";
+import Image from "next/image";
+import user from "@/assets/images/user.jpg";
 
-function Header() {
+function Header({ isAuth = false }) {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const mobileMenuRef = useRef(null);
+  const profileRef = useRef(null);
 
+  // Close menus on outside click
   useEffect(() => {
-    function handleClickOutside(e) {
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+    const handleClickOutside = (e) => {
+      if (
+        mobileMenuOpen &&
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(e.target)
+      ) {
         setMobileMenuOpen(false);
         setActiveDropdown(null);
       }
-    }
 
-    if (mobileMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      if (
+        profileMenuOpen &&
+        profileRef.current &&
+        !profileRef.current.contains(e.target)
+      ) {
+        setProfileMenuOpen(false);
+      }
     };
-  }, [mobileMenuOpen]);
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [mobileMenuOpen, profileMenuOpen]);
 
   return (
     <header className="relative z-50">
@@ -43,33 +53,90 @@ function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             <DesktopNavLinks
               navLinks={navLinks}
               activeDropdown={activeDropdown}
               setActiveDropdown={setActiveDropdown}
+              isAuth={isAuth}
             />
 
-            {/* Desktop Login Button */}
-            <Link
-              href="/login"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-            >
-              Login
-            </Link>
+            {isAuth ? (
+              <div className="relative" ref={profileRef}>
+                <button
+                  onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                  className="focus:outline-none"
+                  aria-expanded={profileMenuOpen}
+                >
+                  <Image
+                    className="w-10 h-10 rounded-full cursor-pointer"
+                    src={user}
+                    alt="User profile"
+                  />
+                </button>
+
+                {/* Profile Dropdown */}
+                {profileMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50">
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 text-sm hover:bg-gray-100"
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      href="/logout"
+                      className="block px-4 py-2 text-sm hover:bg-gray-100"
+                    >
+                      Logout
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </div>
 
-          {/* Mobile Hamburger & Login */}
+          {/* Mobile Nav Toggle */}
           <div className="flex items-center space-x-3 md:hidden">
-            <Link
-              href="/login"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-            >
-              Login
-            </Link>
+            {isAuth ? (
+              <Image className="w-8 h-8 rounded-full" src={user} alt="User" />
+            ) : (
+              <>
+                <Link
+                  href={"/login"}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
+                >
+                  Login
+                </Link>
+
+                <Link
+                  href={"/register"}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
+                >
+                  Register
+                </Link>
+              </>
+            )}
+
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="inline-flex items-center p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 rounded-md"
+              className="p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 rounded-md"
+              aria-label="Toggle mobile menu"
             >
               <svg
                 className="w-6 h-6"
@@ -99,12 +166,13 @@ function Header() {
               activeDropdown={activeDropdown}
               setActiveDropdown={setActiveDropdown}
               setMobileMenuOpen={setMobileMenuOpen}
+              isAuth={isAuth}
             />
           </div>
         )}
       </nav>
 
-      {/* Animation for mobile dropdown */}
+      {/* Animation */}
       <style jsx>{`
         .animate-slideDown {
           animation: slideDown 0.3s ease-out forwards;
