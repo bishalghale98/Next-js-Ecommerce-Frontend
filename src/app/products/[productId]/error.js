@@ -4,7 +4,7 @@ import React from 'react'
 
 function ProductByIdError({error}) {
   return (
-    <div>{error.message}</div>
+    <div className='py-5 text-xl text-red-500'>{error.message}</div>
   )
 }
 

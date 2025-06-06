@@ -1,33 +1,28 @@
-import Loading from "@/app/products/loading";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import placeholderproduct from "@/assets/images/placeholder-product.jpg";
 
 function ProductCard({ product }) {
   return (
     <div className="w-full group max-w-sm bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg transition-shadow dark:bg-gray-800 dark:border-gray-700 ease-in duration-150">
       {/* Product Image with Hover Effect */}
-      <div className="relative w-full h-64 overflow-hidden">
-        <Link href={`/products/${product.id}`}>
+      <Link href={`/products/${product.id}`}>
+        <div className="relative w-full h-64 overflow-hidden">
           <Image
             className="p-6 rounded-t-lg transform transition-transform duration-300 ease-in-out group-hover:scale-105"
-            src={
-              product.imageUrls[0] ||
-              "https://res.cloudinary.com/dzrbfuphd/image/upload/v1745985118/cld-sample-2.jpg"
-            }
+            src={product.imageUrls[0] || placeholderproduct}
             alt={product.name}
             fill
             style={{
-              objectFit: "cover", // or "fill" if you want to stretch
-              objectPosition: "center", // adjust as needed
+              objectFit: "cover",
+              objectPosition: "center",
             }}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            loading="lazy"
-            placeholder="empty"
-            
+            priority
           />
-        </Link>
-      </div>
+        </div>
+      </Link>
 
       {/* Discount Badge */}
       {product?.discount && (
@@ -47,7 +42,7 @@ function ProductCard({ product }) {
           </span>
         </div>
         {/* Product Title */}
-        <Link href="#">
+        <Link href={`/products/${product.id}`}>
           <h5 className="text-lg font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-2 h-14">
             {product.name}
           </h5>
