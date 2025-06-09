@@ -1,26 +1,23 @@
-"use client"
+"use client";
 
-import ProductCard from "@/components/products/Card";
 import React from "react";
+import ProductCard from "@/components/products/Card";
 
-function ClientPage({products}) {
+function ClientPage({ products }) {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-12">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-8 text-center">
-          Our Products
-        </h1>
+    <section className="bg-gray-100 dark:bg-gray-900 p-6 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-8 tracking-tight">
+          🛍️ Top Trending Picks at E-Hatiya
+        </h2>
 
-        {/* Product Grid */}
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-            {products.map((product, index) => (
-              <ProductCard product={product} index={index} key={index} />
-            ))}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((product, index) => (
+            <ProductCard product={product} key={product.id || index} />
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

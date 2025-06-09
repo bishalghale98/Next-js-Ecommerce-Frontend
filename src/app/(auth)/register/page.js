@@ -1,60 +1,115 @@
 "use client";
 
+import { EmailRegex } from "@/constants/regex";
+import Link from "next/link";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { FiUserPlus } from "react-icons/fi";
 
 function RegisterPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-sm">
-        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
-          Register
-        </h2>
-
-        <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Full Name
-            </label>
-            <input
-              type="text"
-              placeholder="Your name"
-              className="w-full px-3 py-2 border rounded-md bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+    <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
+      <div className="mt-12 flex flex-col items-center">
+        <h1 className="text-2xl xl:text-3xl font-extrabold">Sign Up</h1>
+        <form className="w-full flex-1 mt-8" method="POST">
+          <div className=" my-7 border-b text-center">
+            <div className="leading-none  inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
+              sign up with e-mail
+            </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Email
-            </label>
+          <div className="mx-auto max-w-xs">
             <input
+              className="w-full px-8 py-4 mb-5 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+              type="username"
+              placeholder="Username"
+              {...register("username", {
+                required: "Username is required",
+                minLength: {
+                  value: 3,
+                  message: "Username must be at least 3 characters",
+                },
+              })}
+            />
+            {errors.username && (
+              <p className="text-red-500">{errors.username.message}</p>
+            )}
+
+            <input
+              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
               type="email"
-              placeholder="you@example.com"
-              className="w-full px-3 py-2 border rounded-md bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: EmailRegex,
+                  message: "Invalid email address",
+                },
+              })}
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Password
-            </label>
+            {errors.email && (
+              <p className="text-red-500">{errors.email.message}</p>
+            )}
             <input
+              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
               type="password"
-              placeholder="••••••••"
-              className="w-full px-3 py-2 border rounded-md bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Password"
+              {...register("password", { required: "Password is required" })}
             />
+            {errors.password && (
+              <p className="text-red-500">{errors.password.message}</p>
+            )}
+
+            <input
+              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+              type="confirmPassword"
+              placeholder="Confirm Password"
+              {...register("confirmPassword", {
+                required: "Confirm Password is required",
+              })}
+            />
+            {errors.confirmPassword && (
+              <p className="text-red-500">{errors.confirmPassword.message}</p>
+            )}
+            <button
+              type="submit"
+              className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none cursor-pointer"
+            >
+              <FiUserPlus className="w-6 h-6 -ml-2" strokeWidth={2} />
+              <span className="ml-3">Sign Up</span>
+            </button>
+            <p className="mt-6 text-xs text-gray-600 text-center">
+              I agree to abide by E-Hatiya
+              <Link
+                href={`/terms`}
+                className="border-b border-gray-500 border-dotted"
+              >
+                Terms of Service
+              </Link>
+              and its
+              <Link
+                href={`/privacy`}
+                className="border-b border-gray-500 border-dotted"
+              >
+                Privacy Policy
+              </Link>
+            </p>
+            <p className="mt-4 text-sm text-center">
+              Already have an account?
+              <Link
+                href="/login"
+                className="text-indigo-600 hover:underline ml-1"
+              >
+                Go to Login
+              </Link>
+            </p>
           </div>
-
-          <button
-            type="submit"
-            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition"
-          >
-            Register
-          </button>
         </form>
-
-        <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
-          Already have an account? <a href="/login" className="text-blue-500 hover:underline">Login</a>
-        </p>
       </div>
     </div>
   );

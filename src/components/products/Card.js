@@ -131,6 +131,8 @@ function ProductCard({ product }) {
             Add to cart
           </button>
         </div>
+        {/* Product Description */}
+        
       </div>
     </div>
   );

@@ -2,6 +2,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import config from "@/config";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,7 +16,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "E-Hatiya ",
+  title: {
+    default: config.appName,
+    template: `%s | ${config.appName}`,
+  },
   description:
     "E-Hatiya is your one-stop online marketplace offering a wide range of products, secure checkout, fast shipping, and excellent customer support.",
   keywords: [
@@ -37,11 +42,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-
+        <ToastContainer />
         <Header />
         <main className="flex-grow">{children}</main>
         <Footer />
-        
       </body>
     </html>
   );

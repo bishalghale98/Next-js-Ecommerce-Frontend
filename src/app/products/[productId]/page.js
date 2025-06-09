@@ -12,11 +12,66 @@ import {
   RotateCcw,
 } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import MarkdownPreview from "@uiw/react-markdown-preview";
+import ProductDescription from "@/components/products/Description";
+
+async function getProduct(params) {
+  const productId = params;
+  const response = await getProductById(productId);
+  return response;
+}
+
+export const generateMetadata = async ({ params }) => {
+  const { productId } = await params;
+  const product = await getProduct(productId);
+  if (!product) {
+    return {
+      title: "Product Not Found | E-Hatiya",
+      description: "The product you are looking for is not available.",
+    };
+  }
+
+  return {
+    title: `${product.name} | Buy Now at Best Price - E-Hatiya`,
+    description:
+      product?.description ||
+      "Get this amazing product now at the best price in Nepal.",
+    keywords: [
+      product.name,
+      product.category,
+      product.brand,
+      "Buy online Nepal",
+      "E-Hatiya product",
+    ],
+    openGraph: {
+      title: `${product.name} | E-Hatiya`,
+      description: "Get this amazing product now at the best price in Nepal.",
+      url: `https://e-hatiya.com/products/${productId}`,
+      siteName: "E-Hatiya",
+      images: [
+        {
+          url:
+            product?.imageUrls[0] || "https://e-hatiya.com/images/default.jpg",
+          width: 1200,
+          height: 630,
+          alt: product?.name,
+        },
+      ],
+    },
+    // twitter: {
+    //   card: "summary_large_image",
+    //   title: product.name,
+    //   description: product.description,
+    //   images: [
+    //     product.imageUrls?.[0] || "https://e-hatiya.com/images/default.jpg",
+    //   ],
+    // },
+  };
+};
 
 const ProductById = async ({ params }) => {
   const { productId } = await params;
-  const response = await getProductById(productId);
-  const product = response;
+  const product = await getProduct(productId);
 
   return (
     <section className="min-h-screen bg-white text-black p-4 sm:p-6 md:p-10">
@@ -29,13 +84,15 @@ const ProductById = async ({ params }) => {
         <div className="flex flex-col">
           <div className="relative w-full aspect-square bg-gray-100 rounded-xl">
             <span className="absolute top-3 left-3 bg-red-100 text-red-600 px-2 py-1 text-xs rounded">
-              {product.discount || 0} % OFF
+              {product?.discount || 0} % OFF
             </span>
             <Image
               src={product.imageUrls[0]}
               alt="Main Product"
               fill
               className="object-contain"
+              sizes="100%"
+              priority
             />
             {product?.inStock && (
               <span className="absolute bottom-3 left-3 bg-green-100 text-green-700 text-xs px-2 py-1 rounded">
@@ -78,11 +135,6 @@ const ProductById = async ({ params }) => {
               <li key={i}>✔ {f}</li>
             ))} */}
           </ul>
-
-          {/* Description */}
-          <p className="text-sm text-gray-600 leading-relaxed">
-            {/* {product?.description} */}
-          </p>
 
           {/* Quantity & Add to Cart */}
           <div className="flex items-center gap-4 mt-3 flex-wrap">
@@ -165,6 +217,7 @@ const ProductById = async ({ params }) => {
           </div>
         </div>
       </div>
+      <ProductDescription description={product.description} />
     </section>
   );
 };
