@@ -4,10 +4,13 @@ import { login } from "@/api/auth";
 import { EmailRegex } from "@/constants/regex";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { FiUserPlus } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiUserPlus } from "react-icons/fi";
+import { loginUser } from "@/redux/auth/authActions";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserNull } from "@/redux/auth/authSlice";
 
 function LoginPage() {
   const {
@@ -18,26 +21,28 @@ function LoginPage() {
 
   const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
+  const { loading, user, error } = useSelector((state) => state.auth);
 
-  async function onSubmit(data) {
-    setLoading(true);
-    try {
-      const response = await login(data);
-      if (response?.status === 200) {
-        toast.success("Login successful", {
-          autoClose: 750,
-        });
-        router.push("/");
-      }
-    } catch (error) {
-      toast.error(error.response?.data, {
-        autoClose: 750,
-      });
-    } finally {
-      setLoading(false);
-    }
+  const dispatch = useDispatch();
+
+  function onSubmit(data) {
+    dispatch(loginUser(data));
   }
+
+  const [password, setPassword] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      toast.success("Login successful", { autoClose: 750 });
+      router.push("/");
+      return;
+    }
+    if (error) {
+      toast.error(error, { autoClose: 750 });
+      dispatch(setUserNull());
+      return;
+    }
+  }, [user, error]);
 
   return (
     <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
@@ -69,15 +74,30 @@ function LoginPage() {
             {errors.email && (
               <p className="text-red-500">{errors.email.message}</p>
             )}
-            <input
-              className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-              type="password"
-              placeholder="Password"
-              {...register("password", { required: "Password is required" })}
-            />
-            {errors.password && (
-              <p className="text-red-500">{errors.password.message}</p>
-            )}
+
+            <div className="relative mt-5">
+              <button
+                type="button"
+                onClick={() => setPassword(!password)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+              >
+                {password ? <FiEyeOff /> : <FiEye />}
+              </button>
+
+              <input
+                className="w-full pl-8 pr-10 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                type={password ? "text" : "password"}
+                placeholder="Password"
+                {...register("password", { required: "Password is required" })}
+              />
+
+              {errors.password && (
+                <p className="text-red-500 mt-1 text-sm">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
             <button
               type="submit"
               className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none cursor-pointer"

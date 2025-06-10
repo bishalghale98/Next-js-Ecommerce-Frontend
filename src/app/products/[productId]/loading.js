@@ -18,7 +18,7 @@ import {
 function ProductByIdLoader() {
   return (
     <>
-      <section className="min-h-screen bg-white text-black p-4 sm:p-6 md:p-10">
+      <section className="min-h-screen bg-white dark:bg-gray-800 dark:text-white  text-black p-4 sm:p-6 md:p-10">
         <div className="max-w-6xl mx-auto my-5">
           <Skeleton width={100} height={30} />
         </div>

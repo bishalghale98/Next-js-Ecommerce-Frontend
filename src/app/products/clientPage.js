@@ -5,7 +5,7 @@ import ProductCard from "@/components/products/Card";
 
 function ClientPage({ products }) {
   return (
-    <section className="bg-gray-100 dark:bg-gray-900 p-6 min-h-screen">
+    <section className="bg-gray-100 dark:bg-gray-900 p-6 min-h-screen dark:text-white ">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-8 tracking-tight">
           🛍️ Top Trending Picks at E-Hatiya

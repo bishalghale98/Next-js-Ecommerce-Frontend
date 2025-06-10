@@ -2,8 +2,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import config from "@/config";
+import config from "@/constants/config";
 import { ToastContainer } from "react-toastify";
+import ReduxProvider from "@/redux/ReduxProvider";
+import ThemeToggle from "@/components/darkmode/ThemeToggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,10 +44,14 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        <ToastContainer />
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+        <ReduxProvider>
+          <ToastContainer />
+          <Header />
+          <ThemeToggle />
+
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </ReduxProvider>
       </body>
     </html>
   );

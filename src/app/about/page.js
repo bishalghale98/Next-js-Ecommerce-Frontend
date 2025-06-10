@@ -1,4 +1,4 @@
-import config from "@/config";
+import config from "@/constants/config";
 import React from "react";
 
 export const metadata = {

@@ -1,194 +1,114 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useMemo } from "react";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserNull } from "@/redux/auth/authSlice";
+import { usePathname, useRouter } from "next/navigation";
 import navLinks from "../constants/navLinks";
-import DesktopNavLinks from "./DesktopNavLinks";
-import MobileNavLinks from "./MobileNavLinks";
-import Image from "next/image";
-import user from "@/assets/images/user.jpg";
+import DesktopMenu from "./Navbar/DesktopMenu";
+import MobileMenu from "./Navbar/MobileMenu";
 
-function Header({ isAuth = false }) {
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const mobileMenuRef = useRef(null);
-  const profileRef = useRef(null);
+function Header() {
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  // Close menus on outside click
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (
-        mobileMenuOpen &&
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(e.target)
-      ) {
-        setMobileMenuOpen(false);
-        setActiveDropdown(null);
-      }
+  const handleLogout = useCallback(() => {
+    dispatch(setUserNull());
+    localStorage.removeItem("authToken");
+    router.push("/login");
+  }, [dispatch, router]);
 
-      if (
-        profileMenuOpen &&
-        profileRef.current &&
-        !profileRef.current.contains(e.target)
-      ) {
-        setProfileMenuOpen(false);
-      }
-    };
+  const isActive = useCallback(
+    (route) =>
+      pathname === route || (route !== "/" && pathname.startsWith(route)),
+    [pathname]
+  );
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [mobileMenuOpen, profileMenuOpen]);
+
+
+  const filteredNavLinks = useMemo(
+    () => navLinks.filter((item) => !item.isAuth || user),
+    [user]
+  );
+
+  const authButtons = useMemo(
+    () =>
+      user
+        ? [
+            { label: "Profile", href: "/profile", variant: "ghost" },
+            { label: "Logout", onClick: handleLogout, variant: "ghost" },
+          ]
+        : [
+            { label: "Login", href: "/login", variant: "ghost" },
+            { label: "Register", href: "/register", variant: "default" },
+          ],
+    [user, handleLogout]
+  );
 
   return (
-    <header className="relative z-50">
-      <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-screen-xl mx-auto px-4 py-3 flex justify-between items-center">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
-            className="text-2xl font-bold text-gray-900 dark:text-white"
+            className="flex items-center space-x-2 flex-shrink-0"
+            aria-label="Home"
           >
-            E-Hatiya
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-lg">
+                L
+              </span>
+            </div>
+            <span className="font-bold text-xl text-foreground">Logo</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            <DesktopNavLinks
-              navLinks={navLinks}
-              activeDropdown={activeDropdown}
-              setActiveDropdown={setActiveDropdown}
-              isAuth={isAuth}
-            />
+          <DesktopMenu
+            filteredNavLinks={filteredNavLinks}
+            isActive={isActive}
+            authButtons={authButtons}
+          />
 
-            {isAuth ? (
-              <div className="relative" ref={profileRef}>
-                <button
-                  onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                  className="focus:outline-none"
-                  aria-expanded={profileMenuOpen}
-                >
-                  <Image
-                    className="w-10 h-10 rounded-full cursor-pointer"
-                    src={user}
-                    alt="User profile"
-                  />
-                </button>
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Open menu">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[320px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle className="text-left text-xl">Menu</SheetTitle>
+                  <SheetDescription className="sr-only">
+                    Main navigation options
+                  </SheetDescription>
+                </SheetHeader>
 
-                {/* Profile Dropdown */}
-                {profileMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50">
-                    <Link
-                      href="/profile"
-                      className="block px-4 py-2 text-sm hover:bg-gray-100"
-                    >
-                      Profile
-                    </Link>
-                    <Link
-                      href="/logout"
-                      className="block px-4 py-2 text-sm hover:bg-gray-100"
-                    >
-                      Logout
-                    </Link>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-                >
-                  Register
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Nav Toggle */}
-          <div className="flex items-center space-x-3 md:hidden">
-            {isAuth ? (
-              <Image className="w-8 h-8 rounded-full" src={user} alt="User" />
-            ) : (
-              <>
-                <Link
-                  href={"/login"}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-                >
-                  Login
-                </Link>
-
-                <Link
-                  href={"/register"}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-                >
-                  Register
-                </Link>
-              </>
-            )}
-
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 rounded-md"
-              aria-label="Toggle mobile menu"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
+                <MobileMenu
+                  filteredNavLinks={filteredNavLinks}
+                  isActive={isActive}
+                  authButtons={authButtons}
                 />
-              </svg>
-            </button>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div
-            ref={mobileMenuRef}
-            className="md:hidden px-4 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 space-y-3 animate-slideDown"
-          >
-            <MobileNavLinks
-              navLinks={navLinks}
-              activeDropdown={activeDropdown}
-              setActiveDropdown={setActiveDropdown}
-              setMobileMenuOpen={setMobileMenuOpen}
-              isAuth={isAuth}
-            />
-          </div>
-        )}
-      </nav>
-
-      {/* Animation */}
-      <style jsx>{`
-        .animate-slideDown {
-          animation: slideDown 0.3s ease-out forwards;
-        }
-
-        @keyframes slideDown {
-          0% {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0px);
-          }
-        }
-      `}</style>
+      </div>
     </header>
   );
 }
