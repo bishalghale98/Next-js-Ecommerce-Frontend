@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen box-border  overflow-y-hidden overflow-x-hidden`}
       >
         <ReduxProvider>
           <ToastContainer />
@@ -50,7 +50,7 @@ export default function RootLayout({ children }) {
           <ThemeToggle />
 
           <main className="flex-grow">{children}</main>
-          <Footer />
+          {/* <Footer /> */}
         </ReduxProvider>
       </body>
     </html>

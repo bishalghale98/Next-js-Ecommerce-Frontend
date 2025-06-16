@@ -1,12 +1,16 @@
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
+import { FaUserCircle } from "react-icons/fa";
+import { allowedAdminRoles } from "@/lib/helpers/auth";
 
-function DesktopMenu({ filteredNavLinks, isActive, authButtons }) {
+function DesktopMenu({ filteredNavLinks, isActive, user, handleLogout }) {
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+
   return (
     <>
-      <nav className="hidden md:block">
+      <nav className="hidden lg:block">
         <ul className="ml-10 flex items-baseline space-x-4">
           {filteredNavLinks.map((item) => (
             <li key={item.label} className="relative group">
@@ -63,21 +67,62 @@ function DesktopMenu({ filteredNavLinks, isActive, authButtons }) {
       </nav>
 
       {/* Desktop Auth Buttons */}
-      <div className="hidden md:flex items-center space-x-4">
-        {authButtons.map((button) => (
-          <Button
-            key={button.label}
-            variant={button.variant}
-            asChild={!!button.href}
-            onClick={button.onClick}
-          >
-            {button.href ? (
-              <Link href={button.href}>{button.label}</Link>
-            ) : (
-              <span>{button.label}</span>
+      <div className="hidden lg:flex items-center space-x-2 relative transition-none">
+        {user && user !== null ? (
+          <>
+            <Button
+              variant="outline"
+              className="text-sm"
+              onClick={() => setShowUserDropdown(!showUserDropdown)}
+            >
+              <FaUserCircle /> {user.name}
+            </Button>
+
+            {/* Dropdown */}
+            {showUserDropdown && (
+              <div className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-900 border border-border shadow-lg rounded-md z-50">
+                {allowedAdminRoles(user.roles) ? (
+                  <Link href="/dashboard">
+                    <div className="px-4 py-2 hover:bg-muted cursor-pointer text-sm">
+                      <button onClick={() => setShowUserDropdown(false)}>
+                        Dashboard
+                      </button>
+                    </div>
+                  </Link>
+                ) : (
+                  <Link href="/profile">
+                    <div className="px-4 py-2 hover:bg-muted cursor-pointer text-sm">
+                      <button onClick={() => setShowUserDropdown(false)}>
+                        Profile
+                      </button>
+                    </div>
+                  </Link>
+                )}
+
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setShowUserDropdown(false);
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-muted text-sm text-red-600"
+                >
+                  Logout
+                </button>
+              </div>
             )}
-          </Button>
-        ))}
+          </>
+        ) : (
+          <>
+            <Link href="/login">
+              <Button variant="outline" className="text-sm">
+                Login
+              </Button>
+            </Link>
+            <Link href="/register">
+              <Button className="text-sm">Register</Button>
+            </Link>
+          </>
+        )}
       </div>
     </>
   );

@@ -74,15 +74,15 @@ const ProductById = async ({ params }) => {
   const product = await getProduct(productId);
 
   return (
-    <section className="min-h-screen bg-white dark:bg-gray-800 rounded-md text-black dark:text-white p-4 sm:p-6 md:p-10">
+    <section className="min-h-screen bg-background rounded-md text-foreground p-4 sm:p-6 lg:p-10">
       <div className="max-w-6xl mx-auto my-5">
         <BackButton />
       </div>
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* LEFT: Images */}
         <div className="flex flex-col">
-          <div className="relative w-full aspect-square bg-gray-100 dark:bg-gray-800 rounded-xl">
-            <span className="absolute top-3 left-3 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-1 text-xs rounded">
+          <div className="relative w-full aspect-square bg-muted rounded-xl">
+            <span className="absolute top-3 left-3 bg-destructive/10 text-destructive px-2 py-1 text-xs rounded">
               {product?.discount || 0} % OFF
             </span>
             <Image
@@ -94,7 +94,7 @@ const ProductById = async ({ params }) => {
               priority
             />
             {product?.inStock && (
-              <span className="absolute bottom-3 left-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-1 rounded">
+              <span className="absolute bottom-3 left-3 bg-success/10 text-success px-2 py-1 text-xs rounded">
                 ✅ In Stock
               </span>
             )}
@@ -103,7 +103,7 @@ const ProductById = async ({ params }) => {
             {product?.imageUrls.map((img, idx) => (
               <div
                 key={idx}
-                className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-md border border-gray-300 dark:border-gray-700 mx-2"
+                className="w-16 h-16 bg-muted rounded-md border border-border mx-2"
               >
                 <Image src={img} alt={`thumb-${idx}`} width={64} height={64} />
               </div>
@@ -115,37 +115,35 @@ const ProductById = async ({ params }) => {
         <div className="flex flex-col gap-4">
           {/* Title */}
           <h1 className="text-2xl sm:text-3xl font-bold">{product.name}</h1>
-          <div className="flex items-center text-sm gap-3 text-gray-600 dark:text-gray-400">
+          <div className="flex items-center text-sm gap-3 text-muted-foreground">
             ⭐ 4.5 <span>(127 reviews)</span> • SKU: 2,51,594
           </div>
 
           {/* Price */}
-          <div className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-500">
+          <div className="text-xl sm:text-2xl font-bold text-accent">
             Rs.{product?.price}
-            <span className="text-sm text-gray-500 dark:text-gray-400 line-through ml-3">
+            <span className="text-sm text-muted-foreground line-through ml-3">
               Rs.{product?.oldPrice || product?.price}
             </span>
-            <div className="text-sm text-green-500 dark:text-green-400 mt-1">
-              You save Rs.547
-            </div>
+            <div className="text-sm text-accent mt-1">You save Rs.547</div>
           </div>
 
           {/* Features */}
-          <ul className="grid grid-cols-2 gap-2 text-sm text-black dark:text-gray-300">
+          <ul className="grid grid-cols-2 gap-2 text-sm">
             {/* {product?.features.map((f, i) => (
-              <li key={i}>✔ {f}</li>
-            ))} */}
+          <li key={i}>✔ {f}</li>
+        ))} */}
           </ul>
 
           {/* Quantity & Add to Cart */}
           <div className="flex items-center gap-4 mt-3 flex-wrap">
-            <div className="flex border rounded-full overflow-hidden border-gray-300 dark:border-gray-700">
+            <div className="flex border rounded-full overflow-hidden border-input">
               <Button size="icon" variant="ghost">
                 <Minus className="w-4 h-4" />
               </Button>
               <Input
                 type="number"
-                className="w-12 text-center border-none text-black dark:text-white"
+                className="w-12 text-center border-none"
                 defaultValue={1}
               />
               <Button size="icon" variant="ghost">
@@ -153,7 +151,7 @@ const ProductById = async ({ params }) => {
               </Button>
             </div>
 
-            <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 px-6 flex items-center text-white">
+            <Button className="bg-primary hover:bg-primary/90 px-6 flex items-center text-primary-foreground">
               <ShoppingCart className="w-4 h-4 mr-2" />
               Add to Cart
             </Button>
@@ -161,30 +159,27 @@ const ProductById = async ({ params }) => {
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full border-gray-300 dark:border-gray-700"
+              className="rounded-full border-input"
             >
-              <Heart className="w-4 h-4 text-pink-500" />
+              <Heart className="w-4 h-4 text-destructive" />
             </Button>
           </div>
 
           {/* Service Icons */}
-          <div className="flex gap-6 text-sm mt-4 text-gray-700 dark:text-gray-400">
+          <div className="flex gap-6 text-sm mt-4 text-muted-foreground">
             <div className="flex items-center gap-2">
-              <BadgeCheck className="text-blue-600 dark:text-blue-400 w-5 h-5" />{" "}
-              Secure Payment
+              <BadgeCheck className="text-primary w-5 h-5" /> Secure Payment
             </div>
             <div className="flex items-center gap-2">
-              <Truck className="text-green-600 dark:text-green-400 w-5 h-5" />{" "}
-              Fast Delivery
+              <Truck className="text-success w-5 h-5" /> Fast Delivery
             </div>
             <div className="flex items-center gap-2">
-              <RotateCcw className="text-red-500 dark:text-red-400 w-5 h-5" />{" "}
-              Easy Returns
+              <RotateCcw className="text-destructive w-5 h-5" /> Easy Returns
             </div>
           </div>
 
           {/* Brand/Tags */}
-          <div className="mt-4 text-sm text-black dark:text-gray-300">
+          <div className="mt-4 text-sm">
             <p>
               <span className="font-semibold">Brand:</span> {product.brand}
             </p>
@@ -194,28 +189,28 @@ const ProductById = async ({ params }) => {
             </p>
             <div className="flex gap-2 mt-2 flex-wrap">
               {/* {product?.tags.map((tag, i) => (
-                <span
-                  key={i}
-                  className="bg-gray-200 dark:bg-gray-700 text-sm px-2 py-1 rounded-full"
-                >
-                  {tag}
-                </span>
-              ))} */}
+            <span
+              key={i}
+              className="bg-muted text-sm px-2 py-1 rounded-full"
+            >
+              {tag}
+            </span>
+          ))} */}
             </div>
           </div>
 
           {/* Share Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-            <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+            <Button className="bg-[#1877F2] hover:bg-[#1877F2]/90 text-white">
               Facebook
             </Button>
-            <Button className="bg-cyan-500 hover:bg-cyan-600 dark:bg-cyan-600 dark:hover:bg-cyan-700 text-white">
+            <Button className="bg-[#1DA1F2] hover:bg-[#1DA1F2]/90 text-white">
               Twitter
             </Button>
-            <Button className="bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700 text-white">
+            <Button className="bg-[#E4405F] hover:bg-[#E4405F]/90 text-white">
               Instagram
             </Button>
-            <Button className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white">
+            <Button className="bg-[#25D366] hover:bg-[#25D366]/90 text-white">
               WhatsApp
             </Button>
           </div>

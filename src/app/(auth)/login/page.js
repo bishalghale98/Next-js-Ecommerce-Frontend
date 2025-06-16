@@ -54,7 +54,7 @@ function LoginPage() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className=" my-7 border-b text-center">
-            <div className="leading-none  inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
+            <div className="leading-none  inline-block text-sm text-gray-600  tracking-wide font-medium transform translate-y-1/2">
               sign in with e-mail
             </div>
           </div>
@@ -75,17 +75,19 @@ function LoginPage() {
               <p className="text-red-500">{errors.email.message}</p>
             )}
 
-            <div className="relative mt-5">
+            <div className="relative mt-5 ">
               <button
                 type="button"
                 onClick={() => setPassword(!password)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-800 hover:text-gray-700 transition-colors duration-200"
+                aria-label="Toggle password visibility"
+                title="Toggle password visibility"
               >
                 {password ? <FiEyeOff /> : <FiEye />}
               </button>
 
               <input
-                className="w-full pl-8 pr-10 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                className="w-full pl-8 pr-10 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 text-black focus:bg-white"
                 type={password ? "text" : "password"}
                 placeholder="Password"
                 {...register("password", { required: "Password is required" })}
@@ -102,7 +104,7 @@ function LoginPage() {
               type="submit"
               className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none cursor-pointer"
             >
-              <FiUserPlus className="w-6 h-6 -ml-2" strokeWidth={2} />
+              <FiUserPlus className="w-6 h-6 -ml-2 " strokeWidth={2} />
               <span className="ml-3">{loading ? "Loading..." : "Sign in"}</span>
             </button>
             <p className="mt-6 text-xs text-gray-600 text-center">

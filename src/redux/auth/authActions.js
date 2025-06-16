@@ -1,19 +1,40 @@
-const { login } = require("@/api/auth");
-const { createAsyncThunk } = require("@reduxjs/toolkit");
+import Cookies from "js-cookie";
+import { login } from "@/api/auth";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { jsx } from "react/jsx-runtime";
 
 const loginUser = createAsyncThunk(
   "auth/loginUser",
-  async (data, { rejectWithValues }) => {
+  async (data, { rejectWithValue }) => {
     try {
       const response = await login(data);
+      const { token, roles } = response.data || {};
 
-      if (response.data) {
-        localStorage.setItem("authToken", response.data.token);
+      if (token) {
+        Cookies.set("authToken", token, {
+          secure: true,
+          sameSite: "Strict",
+          expires: 1,
+          path: "/",
+        });
       }
 
-      return response?.data;
+      if (roles && roles.length > 0) {
+        if (roles && roles.length > 0) {
+          const roleString = roles.join(", "); // e.g., "USER, MERCHANT, ADMIN"
+
+          Cookies.set("role", roleString, {
+            secure: true,
+            sameSite: "Strict",
+            expires: 1,
+            path: "/",
+          });
+        }
+      }
+
+      return response.data;
     } catch (error) {
-      return rejectWithValues(error.response.data);
+      return rejectWithValue(error?.response?.data || "Login failed");
     }
   }
 );

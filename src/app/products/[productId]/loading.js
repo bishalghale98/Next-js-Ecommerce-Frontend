@@ -10,19 +10,17 @@ import {
   Plus,
   ShoppingCart,
   Heart,
-  BadgeCheck,
-  Truck,
-  RotateCcw,
+
 } from "lucide-react";
 
 function ProductByIdLoader() {
   return (
     <>
-      <section className="min-h-screen bg-white dark:bg-gray-800 dark:text-white  text-black p-4 sm:p-6 md:p-10">
+      <section className="min-h-screen bg-white dark:bg-gray-800 dark:text-white  text-black p-4 sm:p-6 lg:p-10">
         <div className="max-w-6xl mx-auto my-5">
           <Skeleton width={100} height={30} />
         </div>
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* LEFT: Images */}
           <div className="flex flex-col gap-4">
             <div className="relative w-full aspect-square bg-gray-100 rounded-xl">
@@ -111,7 +109,7 @@ function ProductByIdLoader() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
               {[...Array(4)].map((_, i) => (
                 <Skeleton key={i} height={40} />
               ))}

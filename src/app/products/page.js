@@ -1,6 +1,5 @@
 import { getProducts } from "@/api/products";
 import ClientPage from "./clientPage";
-import config from "@/constants/config";
 
 export const metadata = {
   title: "Shop Online in Nepal | Affordable Products at E-Hatiya",

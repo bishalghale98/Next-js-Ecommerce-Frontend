@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loginUser } from "./authActions";
+import { set } from "react-hook-form";
 
 const initialState = {
   user: null,
   error: null,
   loading: false,
+  role: null
 };
 
 export const authSlice = createSlice({
@@ -12,6 +14,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setUserNull: () => initialState,
+   
   },
   extraReducers: (builder) => {
     builder
@@ -23,6 +26,7 @@ export const authSlice = createSlice({
         state.user = action.payload;
         state.loading = false;
         state.error = null;
+       
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.error = action.payload || "Login failed";
@@ -31,6 +35,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setUserNull } = authSlice.actions;
+export const { setUserNull, setRole } = authSlice.actions;
 
 export default authSlice.reducer;
